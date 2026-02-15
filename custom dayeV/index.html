@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story - Valentine Proposal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ec4899;
+            --secondary: #a855f7;
+            --accent: #f43f5e;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 25%, var(--accent) 50%, var(--primary) 75%, var(--secondary) 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.5;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.5; }
+            50% { transform: translateY(-60px) translateX(20px) rotate(10deg); opacity: 0.2; }
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .page.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Home Page */
+        .home-page {
+            background: linear-gradient(50deg, rgba(236, 72, 153, 0.85), rgba(168, 85, 247, 0.85)), 
+                        url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-02-15%20at%2011.25.28%20AM%20%282%29-ObRENH0v4hVWZeairvljoZHfE1dcnTK7up1KV.jpeg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            flex-direction: column;
+        }
+
+        .home-content {
+            text-align: center;
+            z-index: 20;
+            max-width: 700px;
+        }
+
+        .home-content h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 700;
+        }
+
+        .home-content .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .home-content .message {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.8;
+            margin: 2rem 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .heart-pulse {
+            font-size: 4rem;
+            margin: 1rem 0;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Question Page */
+        .question-page {
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            flex-direction: column;
+        }
+
+        .question-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 2.5rem 2rem;
+            max-width: 650px;
+            width: 100%;
+            z-index: 20;
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            width: 20%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .question-text {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            line-height: 1.4;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(236, 72, 153, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Q4 Image Box */
+        .q4-image-box {
+            width: 100%;
+            height: 280px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .q4-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        /* Proposal Buttons */
+        .proposal-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: 2px solid white;
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            animation: glow 2s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.5), 0 0 60px rgba(236, 72, 153, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(236, 72, 153, 0.8), 0 0 80px rgba(236, 72, 153, 0.6); }
+        }
+
+        .yes-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .no-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .no-btn:hover {
+            transform: translateX(150px) translateY(100px);
+        }
+
+        /* Final Page */
+        .final-page {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.85), rgba(168, 85, 247, 0.85)), 
+                        url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-02-15%20at%2011.25.28%20AM%20%281%29-IXCeG8ARqR8e6gx1dOfVv35HGTBRij.jpeg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            flex-direction: column;
+        }
+
+        .final-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 2.5rem 2rem;
+            max-width: 700px;
+            width: 100%;
+            z-index: 20;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .final-title {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .romantic-message {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+            margin: 1.5rem 0 2rem 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+
+        .summary-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid white;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .summary-q {
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .summary-a {
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.3rem;
+            font-size: 0.85rem;
+        }
+
+        .message-box {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: none;
+            height: 100px;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .message-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .message-box:focus {
+            outline: none;
+            border-color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid rgba(34, 197, 94, 0.5);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: confettiFall 3s linear;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .home-content h1 { font-size: 2.5rem; }
+            .question-text { font-size: 1.4rem; }
+            .final-title { font-size: 1.8rem; }
+            .yes-btn, .no-btn { padding: 0.9rem 2rem; font-size: 0.95rem; }
+            .question-content, .final-content { padding: 2rem 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .home-content h1 { font-size: 2rem; }
+            .question-text { font-size: 1.1rem; }
+            .final-title { font-size: 1.4rem; }
+            .yes-btn, .no-btn { padding: 0.8rem 1.5rem; font-size: 0.85rem; }
+            .proposal-buttons { gap: 1rem; }
+        }
+
+        .celebration-text {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <div class="container">
+        <!-- HOME PAGE -->
+        <div class="page active home-page">
+            <div class="home-content">
+                <div class="heart-pulse">❤️</div>
+                <h1>Happy Valentine's Day</h1>
+                <p class="subtitle">My Love ❤️</p>
+                <p class="message">I want to celebrate our beautiful love story and all the precious moments we've shared together. This is my way of telling you how much you mean to me...</p>
+                <button class="submit-btn" onclick="nextPage('q1')">Let's Begin 💕</button>
+            </div>
+        </div>
+
+        <!-- Q1 -->
+        <div class="page question-page" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.85), rgba(168, 85, 247, 0.85)),">
+            <div class="question-content">
+                <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
+                <div class="question-text">What was the first gift I bought for you with my own saved money?</div>
+                <div class="options">
+                    <button class="option-btn" onclick="answer('q1', 'Earrings', 'q2')">Earrings 💍</button>
+                    <button class="option-btn" onclick="answer('q1', 'Ring', 'q2')">Ring 💎</button>
+                    <button class="option-btn" onclick="answer('q1', 'Dress', 'q2')">Dress 👗</button>
+                    <button class="option-btn" onclick="answer('q1', 'I don\'t remember', 'q2')">I don't remember 😊</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="page question-page" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.85), rgba(168, 85, 247, 0.85)), ;">
+            <div class="question-content">
+                <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
+                <div class="question-text">Where did I first take you on my bike ride?</div>
+                <div class="options">
+                    <button class="option-btn" onclick="answer('q2', 'Salem', 'q3')">Salem 🏙️</button>
+                    <button class="option-btn" onclick="answer('q2', 'College', 'q3')">College 🎓</button>
+                    <button class="option-btn" onclick="answer('q2', 'Pondicherry', 'q3')">Pondicherry 🌊</button>
+                    <button class="option-btn" onclick="answer('q2', 'I don\'t remember', 'q3')">I don't remember 😊</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="page question-page" style="background: linear-gradient(50deg, rgba(236, 72, 153, 0.85), rgba(168, 85, 247, 0.85)), ;">
+            <div class="question-content">
+                <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                <div class="question-text">Where were we when we took our very first photo together?</div>
+                <div class="options">
+                    <button class="option-btn" onclick="answer('q3', 'School dress', 'q4')">School dress 👚</button>
+                    <button class="option-btn" onclick="answer('q3', 'College dress', 'q4')">College dress 📚</button>
+                    <button class="option-btn" onclick="answer('q3', 'Normal dress', 'q4')">Normal dress 👔</button>
+                    <button class="option-btn" onclick="answer('q3', 'I don\'t remember', 'q4')">I don't remember 😊</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q4 (EMOTIONAL) -->
+        <div class="page question-page" style="background: linear-gradient(50deg, rgba(250, 155, 203, 0.85), rgba(165, 80, 252, 0.85)), src=('WhatsApp Image 2026-02-15 at 1.22.32 PM.jpeg');">
+            <div class="question-content">
+                <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div> 
+                <div class="question-text">Among these words, which made you feel happiest?</div>
+                <div class="q4-image-box">
+                    <img src="WhatsApp Image 2026-02-15 at 1.22.32 PM.jpeg" alt="Our moment">
+                </div>
+                <div class="options" style="grid-template-columns: 1fr;">
+                    <button class="option-btn" onclick="answer('q4', 'Forever with you', 'q5')">Forever with you 💕</button>
+                    <button class="option-btn" onclick="answer('q4', 'You are my world', 'q5')">You are my world 🌍</button>
+                    <button class="option-btn" onclick="answer('q4', 'My heartbeat', 'q5')">My heartbeat 💓</button>
+                    <button class="option-btn" onclick="answer('q4', 'My everything', 'q5')">My everything 💖</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q5 (PROPOSAL) -->
+        <div class="page question-page" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.85), rgba(168, 85, 247, 0.85)),;">
+            <div class="question-content">
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+                <div class="question-text" style="font-size: 2.2rem;">Will you marry me? 💍</div>
+                <div class="proposal-buttons">
+                    <button class="yes-btn" onclick="yesClick()">Yes 💍</button>
+                    <button class="no-btn" id="noBtn">No 😅</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FINAL PAGE -->
+        <div class="page final-page">
+            <div class="final-content">
+                <div class="final-title">You just made me the happiest! 💕</div>
+                <div class="romantic-message">
+                    <p>Ammu mah yanna mudija alavoku impress 😅 panran d mah ana athu waste pova kudathuna yanaku nee pondati 😘 💯erukuriya mah nee yanaku oru varam maari mah unna thittunalum kathunalum yaan venamnu sonnanum nee yanaku Venum wife 💕una na Rani maarilam solla mattan yannala mudija alavoku paathupan mah nee ketta athuvenalum seyivan mah nee ella na sethuduvan d naa athu pannalum unakangatha pondati panrane nee yanna asalta vitra mattanu mamburan d yanaku nee azhagana kolatha maari panra pondati 😘 d nee naa unna alla time me unnathama nenachittu erukane ana un manasula enna erukunu therila d mah yanaku nee Venum d avalotha.. 🫵</p>
+                </div>
+
+                <div id="summaryBox" style="margin: 2rem 0;"></div>
+
+                <textarea class="message-box" id="finalMessage" placeholder="Share your beautiful message with me..."></textarea>
+                <button class="submit-btn" onclick="submitAll()">Send My Love 💌</button>
+
+                <div class="success-message" id="successMsg">Your love message has been sent! 💕</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+        let currentPage = 'home';
+
+        function createFloatingHearts() {
+            const container = document.getElementById('floatingHearts');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.top = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                heart.style.animationDuration = (4 + Math.random() * 3) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        function nextPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.page')[pageIndex(page)].classList.add('active');
+            currentPage = page;
+        }
+
+        function pageIndex(page) {
+            const pages = ['home', 'q1', 'q2', 'q3', 'q4', 'q5', 'final'];
+            return pages.indexOf(page);
+        }
+
+        function answer(q, ans, next) {
+            answers[q] = ans;
+            localStorage.setItem('answers', JSON.stringify(answers));
+            nextPage(next);
+        }
+
+        function yesClick() {
+            answers['q5'] = 'Yes';
+            createConfetti();
+            setTimeout(() => {
+                showSummary();
+                nextPage('final');
+            }, 1500);
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.background = ['#ec4899', '#f43f5e', '#a855f7', 'white'][Math.floor(Math.random() * 4)];
+                confetti.style.animationDuration = (2 + Math.random() * 1) + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        function showSummary() {
+            const summary = document.getElementById('summaryBox');
+            summary.innerHTML = `
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 15px;">
+                    <h3 style="color: white; margin-bottom: 1rem; font-size: 1.2rem;">Our Love Story 💖</h3>
+                    ${Object.entries(answers).map(([k, v]) => `
+                        <div class="summary-box">
+                            <div class="summary-q">${getQuestionText(k)}</div>
+                            <div class="summary-a">${v}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getQuestionText(q) {
+            const qMap = {
+                'q1': '❓ First Gift',
+                'q2': '🏍️ Bike Ride',
+                'q3': '📸 First Photo',
+                'q4': '💕 Happiest Words',
+                'q5': '💍 Marriage Proposal'
+            };
+            return qMap[q] || q;
+        }
+
+        function submitAll() {
+            const message = document.getElementById('finalMessage').value;
+            const allData = Object.entries(answers).map(([k, v]) => `${getQuestionText(k)}: ${v}`).join('\n');
+            const fullMessage = `Love Quiz Results:\n${allData}\n\nMessage: ${message}`;
+            
+            const encodedMessage = encodeURIComponent(fullMessage);
+            window.location.href = `sms:6380031643?body=${encodedMessage}`;
+            
+            document.getElementById('successMsg').classList.add('show');
+            localStorage.setItem('loveAnswers', JSON.stringify(answers));
+        }
+
+        document.getElementById('noBtn').addEventListener('mouseover', function() {
+            this.style.transform = `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px)`;
+        });
+
+        createFloatingHearts();
+        const savedAnswers = localStorage.getItem('answers');
+        if (savedAnswers) Object.assign(answers, JSON.parse(savedAnswers));
+    </script>
+</body>
+</html>
